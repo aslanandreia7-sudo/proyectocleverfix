@@ -9,14 +9,25 @@
         .bg-brand { background-color: #1565c0; }
         .text-brand { color: #1565c0; }
         .bg-brand-dark { background-color: #0d47a1; }
-        
-        .group:hover .mega-menu { display: block; }
+
         .mega-menu { display: none; }
-        
+
+        @media (hover: hover) and (pointer: fine) {
+            .group:hover .mega-menu { display: block; }
+        }
+
         #main-header, #main-logo { transition: all 0.3s ease-in-out; }
+
+        .mobile-menu-panel {
+            display: none;
+        }
+
+        .mobile-menu-panel.open {
+            display: block;
+        }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans overflow-x-hidden">
 
     {% if user.is_authenticated and not user.profile.is_verified %}
     <div class="bg-yellow-500 text-white text-center py-2 px-4 text-sm font-bold shadow-inner">
@@ -24,11 +35,11 @@
     </div>
     {% endif %}
 
-    <div class="bg-gray-900 text-gray-400 text-xs py-2 px-10 flex justify-between items-center">
+    <div class="bg-gray-900 text-gray-400 text-xs py-2 px-4 md:px-10 flex flex-col md:flex-row md:justify-between md:items-center gap-2">
         <span>📞 {{ site_settings.phone|default:"686 178 0903" }}</span>
-        <div class="space-x-4 flex items-center">
-            <a href="/admin" class="hover:text-white border-r border-gray-700 pr-4">Admin Panel</a>
-            
+        <div class="flex flex-wrap items-center gap-3 md:gap-4">
+            <a href="/admin" class="hover:text-white border-r border-gray-700 pr-3 md:pr-4">Admin Panel</a>
+
             {% if user.is_authenticated %}
                 <div class="group relative inline-block">
                     <button class="flex items-center space-x-1 text-white hover:text-blue-300 font-bold outline-none transition-colors">
@@ -40,24 +51,13 @@
 
                     <div class="absolute right-0 w-56 pt-2 hidden group-hover:block z-[100]">
                         <div class="bg-white border border-gray-200 rounded-lg shadow-2xl overflow-hidden">
-                            <a href="{% url 'account_dashboard' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                                📊 Account Dashboard
-                            </a>
-                            
-                            <a href="{% url 'address_book' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                                📍 Address Book
-                            </a>
-
-                            <a href="{% url 'my_orders' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                                📦 My Orders
-                            </a>
-                            
+                            <a href="{% url 'account_dashboard' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">📊 Account Dashboard</a>
+                            <a href="{% url 'address_book' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">📍 Address Book</a>
+                            <a href="{% url 'my_orders' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">📦 My Orders</a>
                             <div class="border-t border-gray-100">
                                 <form action="{% url 'logout' %}" method="post">
                                     {% csrf_token %}
-                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-bold transition-colors">
-                                        🚪 Logout
-                                    </button>
+                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-bold transition-colors">🚪 Logout</button>
                                 </form>
                             </div>
                         </div>
@@ -67,90 +67,105 @@
                 <a href="{% url 'login' %}" class="hover:text-white">Login</a>
                 <a href="{% url 'register' %}" class="hover:text-white">Register</a>
             {% endif %}
-            
-            <a href="#" class="hover:text-white border-l border-gray-700 pl-4">Credit Line</a>
+
+            <a href="#" class="hover:text-white border-l border-gray-700 pl-3 md:pl-4">Credit Line</a>
         </div>
     </div>
 
-    <header id="main-header" class="bg-white border-b-2 border-brand py-4 px-10 flex items-center gap-6 shadow-md sticky top-0 z-50">
-        <a href="/" class="shrink-0" id="logo-container">
-            {% if site_settings.logo %}
-                <img src="{{ site_settings.logo.url }}" alt="CleverFix" id="main-logo" 
-                     class="object-contain" 
-                     style="max-height: 100px; width: auto;">
-            {% else %}
-                <span class="text-2xl font-black text-brand tracking-tighter">CLEVER<span class="text-red-600">FIX</span></span>
-            {% endif %}
-        </a>
-        
-        <form action="{% url 'home' %}" method="GET" class="flex-1 flex border-2 border-brand rounded overflow-hidden focus-within:ring-2 ring-blue-200 transition-all">
-            <input type="text" name="q" placeholder="Busca refacciones para iPhone, Samsung, Mac..." class="w-full px-4 py-2 outline-none text-sm" value="{{ request.GET.q|default:'' }}">
-            <button type="submit" class="bg-brand hover:bg-brand-dark text-white px-6 font-bold transition-colors">
-                BUSCAR
-            </button>
-        </form>
+    <header id="main-header" class="bg-white border-b-2 border-brand py-3 md:py-4 px-4 md:px-10 sticky top-0 z-50 shadow-md">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-6">
+            <div class="flex items-center justify-between gap-3">
+                <a href="/" class="shrink-0" id="logo-container">
+                    {% if site_settings.logo %}
+                        <img src="{{ site_settings.logo.url }}" alt="CleverFix" id="main-logo"
+                             class="object-contain" style="max-height: 72px; width: auto;">
+                    {% else %}
+                        <span class="text-2xl font-black text-brand tracking-tighter">CLEVER<span class="text-red-600">FIX</span></span>
+                    {% endif %}
+                </a>
 
-        <nav class="flex gap-6 items-center font-medium text-xs">
-            <div class="hidden md:flex gap-4 text-gray-600">
-                <a href="{% url 'home' %}" class="hover:text-brand">HOME</a>
-                <a href="#" class="hover:text-brand">CONTACT US</a>
+                <button id="mobileMenuBtn" type="button"
+                        class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-md border border-gray-300 text-gray-700 bg-white active:scale-95">
+                    <span class="sr-only">Abrir menú</span>
+                    ☰
+                </button>
             </div>
-            <a href="{% url 'cart' %}" class="bg-brand hover:bg-brand-dark text-white px-4 py-2 rounded-md flex items-center shadow-lg transition-all active:scale-95">
-                <span class="mr-2">🛒</span> 
-                <span class="font-bold">CART</span>
-                <span class="ml-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ cart_count|default:"0" }}</span>
-            </a>
-        </nav>
+
+            <form action="{% url 'home' %}" method="GET"
+                  class="w-full lg:flex-1 flex border-2 border-brand rounded overflow-hidden focus-within:ring-2 ring-blue-200 transition-all">
+                <input type="text" name="q" placeholder="Busca refacciones para iPhone, Samsung, Mac..."
+                       class="w-full px-4 py-3 outline-none text-sm min-w-0"
+                       value="{{ request.GET.q|default:'' }}">
+                <button type="submit" class="bg-brand hover:bg-brand-dark text-white px-4 md:px-6 font-bold transition-colors whitespace-nowrap">
+                    BUSCAR
+                </button>
+            </form>
+
+            <nav class="flex flex-wrap gap-3 md:gap-4 items-center font-medium text-xs lg:text-sm">
+                <div class="hidden lg:flex gap-4 text-gray-600">
+                    <a href="{% url 'home' %}" class="hover:text-brand">HOME</a>
+                    <a href="#" class="hover:text-brand">CONTACT US</a>
+                </div>
+                <a href="{% url 'cart' %}" class="bg-brand hover:bg-brand-dark text-white px-4 py-2 rounded-md flex items-center shadow-lg transition-all active:scale-95">
+                    <span class="mr-2">🛒</span>
+                    <span class="font-bold">CART</span>
+                    <span class="ml-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ cart_count|default:"0" }}</span>
+                </a>
+            </nav>
+        </div>
     </header>
 
-    <div class="flex max-w-7xl mx-auto mt-6 gap-6 px-4 pb-20">
-        <aside class="w-64 shrink-0 relative">
-            <div class="bg-white rounded-t-lg shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-brand text-white p-3 font-bold uppercase text-[11px] tracking-wider flex items-center justify-between">
+    <div class="flex flex-col lg:flex-row max-w-7xl mx-auto mt-4 lg:mt-6 gap-4 lg:gap-6 px-4 pb-20">
+        <aside id="sidebar" class="w-full lg:w-64 shrink-0 relative">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <button type="button" id="brandToggle"
+                        class="w-full bg-brand text-white p-3 font-bold uppercase text-[11px] tracking-wider flex items-center justify-between lg:cursor-default">
                     Categorías de Marcas
                     <span>☰</span>
-                </div>
+                </button>
 
-                <div class="flex flex-col">
-                    {% for cat in nav_brands %}
-                    <div class="group border-b last:border-0 border-gray-100">
-                        <a href="{% url 'category_filter' cat.slug %}" 
-                           class="w-full text-left p-3 hover:bg-blue-50 flex justify-between items-center text-sm font-medium text-gray-700 hover:text-brand transition-colors">
-                            {{ cat.name }} 
-                            <span class="text-gray-300 text-xs">▶</span>
-                        </a>
+                <div id="brandList" class="hidden lg:block">
+                    <div class="flex flex-col">
+                        {% for cat in nav_brands %}
+                        <div class="group border-b last:border-0 border-gray-100 relative">
+                            <a href="{% url 'category_filter' cat.slug %}"
+                               class="w-full text-left p-3 hover:bg-blue-50 flex justify-between items-center text-sm font-medium text-gray-700 hover:text-brand transition-colors">
+                                {{ cat.name }}
+                                <span class="text-gray-300 text-xs">▶</span>
+                            </a>
 
-                        <div class="mega-menu absolute left-64 top-0 w-[600px] bg-white shadow-2xl border border-gray-200 rounded-r-lg z-50 p-6 min-h-[400px]">
-                            <h2 class="text-xl font-bold text-brand border-b pb-2 mb-4">{{ cat.name }}</h2>
-                            <div class="grid grid-cols-3 gap-6">
-                                {% for type in cat.types.all %}
-                                <div>
-                                    <h3 class="text-red-600 font-bold text-xs uppercase tracking-widest mb-3 border-b border-red-50">
-                                        {{ type.name }}
-                                    </h3>
-                                    <ul class="space-y-1">
-                                        {% for model in type.models.all %}
-                                        <li>
-                                            <a href="{% url 'model_filter' cat.slug type.slug model.slug %}" 
-                                               class="text-gray-600 hover:text-brand text-sm block py-0.5 transition-all hover:translate-x-1">
-                                                {{ model.name }}
-                                            </a>
-                                        </li>
-                                        {% empty %}
-                                        <li class="text-gray-400 text-xs italic">Próximamente...</li>
-                                        {% endfor %}
-                                    </ul>
+                            <div class="mega-menu lg:absolute lg:left-64 lg:top-0 lg:w-[600px] w-full bg-white shadow-2xl border border-gray-200 rounded-r-lg z-50 p-4 lg:p-6 min-h-[300px]">
+                                <h2 class="text-lg lg:text-xl font-bold text-brand border-b pb-2 mb-4">{{ cat.name }}</h2>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                                    {% for type in cat.types.all %}
+                                    <div>
+                                        <h3 class="text-red-600 font-bold text-xs uppercase tracking-widest mb-3 border-b border-red-50">
+                                            {{ type.name }}
+                                        </h3>
+                                        <ul class="space-y-1">
+                                            {% for model in type.models.all l %}
+                                            >
+                                                <a href="{% url 'model_filter' cat.slug type.slug model.slug %}"
+                                                   class="text-gray-600 hover:text-brand text-sm block py-1 transition-all hover:translate-x-1">
+                                                    {{ model.name }}
+                                                </a>
+                                            </li>
+                                            {% empty y %}
+                                            >Próximamente...</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
                             </div>
                         </div>
+                        {% empty %}
+                        <p class="p-4 text-xs text-gray-400 text-center">No hay categorías cargadas.</p>
+                        {% endfor %}
                     </div>
-                    {% empty %}
-                    <p class="p-4 text-xs text-gray-400 text-center">No hay categorías cargadas.</p>
-                    {% endfor %}
                 </div>
             </div>
-            
+
             <div class="mt-4 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg p-4 text-white shadow-md">
                 <p class="text-[10px] text-red-500 font-bold uppercase">Nuevas</p>
                 <h4 class="font-bold text-sm">Refacciones 2026</h4>
@@ -158,26 +173,45 @@
             </div>
         </aside>
 
-        <main class="flex-1">
+        <main class="flex-1 min-w-0">
             {% block content %}{% endblock %}
         </main>
     </div>
 
     <script>
-        window.onscroll = function() {
-            const header = document.getElementById("main-header");
-            const logo = document.getElementById("main-logo");
+        const header = document.getElementById("main-header");
+        const logo = document.getElementById("main-logo");
+        const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+        const brandToggle = document.getElementById("brandToggle");
+        const brandList = document.getElementById("brandList");
 
+        window.addEventListener("scroll", function() {
             if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-                header.classList.remove("py-4");
+                header.classList.remove("py-3", "md:py-4");
                 header.classList.add("py-2", "bg-white/95", "backdrop-blur-sm");
-                if(logo) logo.style.maxHeight = "50px";
+                if (logo) logo.style.maxHeight = "50px";
             } else {
                 header.classList.remove("py-2", "bg-white/95", "backdrop-blur-sm");
-                header.classList.add("py-4");
-                if(logo) logo.style.maxHeight = "100px";
+                header.classList.add("py-3", "md:py-4");
+                if (logo) logo.style.maxHeight = "72px";
             }
-        };
+        });
+
+        if (mobileMenuBtn && brandList) {
+            mobileMenuBtn.addEventListener("click", () => {
+                brandList.classList.toggle("hidden");
+                brandList.classList.toggle("block");
+            });
+        }
+
+        if (brandToggle && brandList) {
+            brandToggle.addEventListener("click", () => {
+                if (window.innerWidth < 1024) {
+                    brandList.classList.toggle("hidden");
+                    brandList.classList.toggle("block");
+                }
+            });
+        }
     </script>
 </body>
 </html>

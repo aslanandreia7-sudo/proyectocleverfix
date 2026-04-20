@@ -5,48 +5,58 @@
 
 {% if banners %}
   {% with banners.0 as b %}
-  <div class="bg-gradient-to-r from-brand to-brand-dark text-white p-6 flex justify-between items-center rounded-lg mb-6 shadow-sm">
-    <div>
-      <h2 class="text-xl font-bold">{{ b.title }}</h2>
-      <p class="text-sm text-blue-100 mt-1">{{ b.subtitle }}</p>
+  <div class="bg-gradient-to-r from-brand to-brand-dark text-white p-4 md:p-6 rounded-lg mb-6 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="min-w-0">
+        <h2 class="text-lg md:text-xl font-bold leading-tight">{{ b.title }}</h2>
+        <p class="text-sm text-blue-100 mt-1">{{ b.subtitle }}</p>
+      </div>
+      <a href="{{ b.button_url }}"
+         class="bg-white text-brand font-bold text-sm px-5 md:px-6 py-2 rounded shadow hover:bg-gray-100 transition-colors shrink-0 text-center w-full sm:w-auto">
+        {{ b.button_text }}
+      </a>
     </div>
-    <a href="{{ b.button_url }}"
-       class="bg-white text-brand font-bold text-sm px-6 py-2 rounded shadow hover:bg-gray-100 transition-colors shrink-0">
-      {{ b.button_text }}
-    </a>
   </div>
   {% endwith %}
 {% endif %}
 
-<nav class="text-xs text-gray-500 mb-4 flex items-center gap-2">
-  <a href="/" class="hover:text-brand">Home</a>
-  {% if brand %} 
-    <span class="text-gray-400">/</span> 
-    <span class="text-brand font-medium">{{ brand.name }}</span>
-  {% endif %}
-  {% if model %} 
-    <span class="text-gray-400">/</span> 
-    <span class="text-brand font-medium">{{ model.name }}</span>
-  {% endif %}
+<nav aria-label="Breadcrumb" class="text-xs text-gray-500 mb-4 overflow-x-auto">
+  <ol class="flex items-center gap-2 whitespace-nowrap min-w-max">
+    <li>
+      <a href="/" class="hover:text-brand">Home</a>
+    </li>
+
+    {% if brand %}
+      <li class="text-gray-400">/</li>
+      <li class="text-brand font-medium">{{ brand.name }}</li>
+    {% endif %}
+
+    {% if model %}
+      <li class="text-gray-400">/</li>
+      <li class="text-brand font-medium">{{ model.name }}</li>
+    {% endif %}
+  </ol>
 </nav>
 
-<div class="flex justify-between items-end border-b border-gray-200 pb-2 mb-6">
-    <h1 class="text-xl font-bold text-gray-800">
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 border-b border-gray-200 pb-3 mb-6">
+    <h1 class="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 leading-tight">
       {{ page_title }}
     </h1>
-    <span class="text-gray-400 text-sm pb-1">{{ products|length }} productos encontrados</span>
+    <span class="text-gray-400 text-sm">
+      {{ products|length }} productos encontrados
+    </span>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
   {% for product in products %}
-  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl hover:border-brand transition-all flex flex-col">
-    
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl hover:border-brand transition-all flex flex-col h-full">
+
     <a href="{% url 'product_detail' product.slug %}" class="block bg-gray-50">
       {% if product.image %}
         <img src="{{ product.image.url }}" alt="{{ product.name }}"
-             class="w-full h-48 object-contain p-2">
+             class="w-full h-44 sm:h-48 md:h-52 object-contain p-3">
       {% else %}
-        <div class="w-full h-48 flex items-center justify-center text-5xl bg-gray-100">
+        <div class="w-full h-44 sm:h-48 md:h-52 flex items-center justify-center text-5xl bg-gray-100">
             📱
         </div>
       {% endif %}
@@ -54,39 +64,39 @@
 
     <div class="p-4 flex flex-col flex-1">
       <a href="{% url 'product_detail' product.slug %}"
-         class="text-sm font-bold text-gray-800 hover:text-brand line-clamp-2 mb-1 h-10">
+         class="text-sm md:text-[15px] font-bold text-gray-800 hover:text-brand line-clamp-2 mb-1 min-h-[2.75rem]">
         {{ product.name }}
       </a>
 
       {% if product.color %}
         <p class="text-xs text-gray-500 italic mb-2">Color: {{ product.color }}</p>
       {% endif %}
-      
-      <p class="text-xs text-gray-500 mb-4 line-clamp-2">
+
+      <p class="text-xs md:text-sm text-gray-500 mb-4 line-clamp-2 min-h-[2.5rem]">
           {{ product.description|default:"Refacción de alta calidad para tu dispositivo."|truncatechars:60 }}
       </p>
 
       <div class="mt-auto">
-          <div class="text-lg font-black text-brand mb-3">${{ product.price }}</div>
-          
+          <div class="text-lg md:text-xl font-black text-brand mb-3">${{ product.price }}</div>
+
           <form method="post" action="{% url 'cart_add' product.id %}">
             {% csrf_token %}
             <input type="hidden" name="quantity" value="1">
             <button type="submit"
-                    class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-2 rounded text-xs transition-colors flex items-center justify-center gap-2">
-              <span class="text-lg">+</span> ADD TO CART
+                    class="w-full min-h-[44px] bg-brand hover:bg-brand-dark text-white font-bold py-2.5 rounded text-xs md:text-sm transition-colors flex items-center justify-center gap-2">
+              <span class="text-lg leading-none">+</span> ADD TO CART
             </button>
           </form>
       </div>
     </div>
   </div>
-  
+
   {% empty %}
-  <div class="col-span-full text-center py-20 bg-white rounded-lg border-2 border-dashed border-gray-200">
-    <div class="text-6xl mb-4">📦</div>
-    <h3 class="text-lg font-bold text-gray-700">No hay productos disponibles</h3>
-    <p class="text-gray-400 text-sm mt-2">
-      Estamos actualizando nuestro inventario. Vuelve pronto o consulta el 
+  <div class="col-span-full text-center py-12 md:py-20 px-4 bg-white rounded-lg border-2 border-dashed border-gray-200">
+    <div class="text-5xl md:text-6xl mb-4">📦</div>
+    <h3 class="text-base md:text-lg font-bold text-gray-700">No hay productos disponibles</h3>
+    <p class="text-gray-400 text-sm mt-2 max-w-xl mx-auto">
+      Estamos actualizando nuestro inventario. Vuelve pronto o consulta el
       <a href="/admin" class="text-brand hover:underline">panel de control</a>.
     </p>
   </div>
