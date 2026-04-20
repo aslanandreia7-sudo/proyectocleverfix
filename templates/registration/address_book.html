@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-lg border-t-4 border-brand">
+    <h2 class="text-2xl font-black text-brand mb-6">LIBRETA DE DIRECCIONES</h2>
+    
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold uppercase">Dirección de Envío</label>
+                <input type="text" name="address_1" value="{{ profile.address_1 }}" class="w-full border p-2 rounded">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase">Ciudad</label>
+                <input type="text" name="city" value="{{ profile.city }}" class="w-full border p-2 rounded">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase">Teléfono de Contacto</label>
+                <input type="text" name="telephone" value="{{ profile.telephone }}" class="w-full border p-2 rounded">
+            </div>
+        </div>
+        <button type="submit" class="bg-brand text-white px-6 py-2 rounded font-bold mt-4">
+            GUARDAR CAMBIOS
+        </button>
+    </form>
+</div>
+{% endblock %}

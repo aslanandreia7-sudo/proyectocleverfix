@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block title %}Crear Cuenta | CleverFix{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<div class="max-w-5xl mx-auto mt-10 mb-20 px-4">
+    <div class="bg-white p-8 md:p-12 border border-gray-200 rounded-lg shadow-xl border-t-4 border-brand">
+        
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-black text-brand tracking-tighter uppercase italic">
+                Únete a <span class="text-red-600">CleverFix</span>
+            </h2>
+            <p class="text-gray-500 text-sm mt-2 font-medium">
+                Crea tu cuenta para comprar refacciones en Mexicali y consultar tus garantías.
+            </p>
+        </div>
+
+        <form method="post" class="space-y-8">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                
+                <div class="space-y-5">
+                    <h3 class="font-bold text-gray-700 border-b pb-2 italic text-sm uppercase tracking-widest">Información Personal</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Nombre(s) *</label>
+                            <div class="field-container">{{ form.first_name }}</div>
+                            {% if form.first_name.errors %}<p class="error-msg">⚠ {{ form.first_name.errors.0|striptags }}</p>{% endif %}
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Apellidos *</label>
+                            <div class="field-container">{{ form.last_name }}</div>
+                            {% if form.last_name.errors %}<p class="error-msg">⚠ {{ form.last_name.errors.0|striptags }}</p>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Dirección de Envío *</label>
+                        <div class="field-container">{{ form.address_1 }}</div>
+                        {% if form.address_1.errors %}<p class="error-msg">⚠ {{ form.address_1.errors.0|striptags }}</p>{% endif %}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Estado *</label>
+                            <select name="state" id="state-selector" class="w-full select2-input">
+                                <option value="">Selecciona Estado...</option>
+                                <option value="Baja California" selected>Baja California</option>
+                                <option value="Sonora">Sonora</option>
+                                <option value="Jalisco">Jalisco</option>
+                                <option value="CDMX">Ciudad de México</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Ciudad *</label>
+                            <select name="city" id="city-selector" class="w-full select2-input">
+                                <option value="Mexicali" selected>Mexicali</option>
+                                <option value="Tijuana">Tijuana</option>
+                                <option value="Guadalajara">Guadalajara</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Código Postal *</label>
+                            <div class="field-container">{{ form.zip_code }}</div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Teléfono *</label>
+                            <div class="field-container">{{ form.telephone }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    <h3 class="font-bold text-gray-700 border-b pb-2 italic text-sm uppercase tracking-widest">Credenciales de Acceso</h3>
+
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Usuario *</label>
+                        <div class="field-container">{{ form.username }}</div>
+                        {% if form.username.errors %}<p class="error-msg">⚠ {{ form.username.errors.0|striptags }}</p>{% endif %}
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Email *</label>
+                        <div class="field-container">{{ form.email }}</div>
+                        {% if form.email.errors %}<p class="error-msg">⚠ {{ form.email.errors.0|striptags }}</p>{% endif %}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Contraseña *</label>
+                            <div class="field-container">{{ form.password }}</div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-[10px] font-bold text-gray-700 uppercase mb-1 ml-1">Confirmar *</label>
+                            <div class="field-container">{{ form.confirm_password }}</div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-brand hover:bg-black text-white font-black py-4 rounded-md shadow-lg transition-all active:scale-95 uppercase tracking-widest text-sm mt-4">
+                        ENVIAR REGISTRO Y RECIBIR CÓDIGO
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .field-container input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #f3f4f6;
+        border-radius: 0.375rem;
+        background-color: #f9fafb;
+        font-size: 0.875rem;
+        color: #1f2937;
+        outline: none;
+        transition: all 0.2s;
+    }
+    .field-container input:focus {
+        border-color: #ff0000;
+        background-color: white;
+        box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.1);
+    }
+    .error-msg {
+        color: #dc2626;
+        font-size: 10px;
+        font-weight: 700;
+        margin-top: 0.25rem;
+    }
+    .select2-container--default .select2-selection--single {
+        border: 2px solid #f3f4f6 !important;
+        height: 45px !important;
+        padding: 8px !important;
+        border-radius: 6px !important;
+        background-color: #f9fafb !important;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('.select2-input').select2({
+        placeholder: "Buscar...",
+        allowClear: true
+    });
+});
+</script>
+{% endblock %}

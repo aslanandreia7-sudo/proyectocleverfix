@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 border border-gray-100 rounded-xl shadow-2xl mt-16 mb-16">
+    <h2 class="text-3xl font-black text-brand mb-2 text-center italic uppercase">Bienvenido</h2>
+    <p class="text-center text-gray-400 text-xs mb-8 uppercase tracking-widest font-bold">Acceso a Clientes</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-4 p-3 rounded text-sm font-bold {% if message.tags == 'error' %}bg-red-50 text-red-600 border border-red-200{% else %}bg-blue-50 text-blue-600 border border-blue-200{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        
+        <div class="crispy-custom-labels">
+            {{ form|crispy }}
+        </div>
+
+        <button type="submit" class="w-full bg-brand hover:bg-black text-white font-black py-4 px-4 rounded-lg transition-all duration-300 shadow-lg transform hover:-translate-y-1">
+            INICIAR SESIÓN
+        </button>
+    </form>
+
+    <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+        <p class="text-sm text-gray-500">
+            ¿Aún no eres parte de CleverFix? 
+            <br>
+            <a href="{% url 'register' %}" class="text-brand font-black hover:underline uppercase text-xs">Crea tu cuenta aquí →</a>
+        </p>
+    </div>
+</div>
+
+<style>
+    /* Esto hace que los campos de Crispy se vean más modernos */
+    .crispy-custom-labels label {
+        font-size: 0.75rem !important;
+        text-transform: uppercase !important;
+        font-weight: 800 !important;
+        color: #6b7280 !important;
+    }
+    .crispy-custom-labels input {
+        border-radius: 8px !important;
+        padding: 12px !important;
+        border: 2px solid #f3f4f6 !important;
+    }
+    .crispy-custom-labels input:focus {
+        border-color: #ff0000 !important; /* Color de tu marca */
+        box-shadow: none !important;
+    }
+</style>
+{% endblock %}
