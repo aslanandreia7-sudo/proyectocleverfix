@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --- SEGURIDAD ---
 DEBUG = True
 SECRET_KEY = os.environ.get('SECRET_KEY')
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['proyectocleverfix.onrender.com', 'localhost', '127.0.0.1']
 
 # --- APLICACIONES ---
 INSTALLED_APPS = [
@@ -102,3 +102,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # --- STRIPE ---
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
