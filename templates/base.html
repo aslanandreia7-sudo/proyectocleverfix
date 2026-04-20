@@ -143,15 +143,15 @@
                                             {{ type.name }}
                                         </h3>
                                         <ul class="space-y-1">
-                                            {% for model in type.models.all l %}
-                                            >
+                                            {% for model in type.models.all %}
+                                            <li>
                                                 <a href="{% url 'model_filter' cat.slug type.slug model.slug %}"
                                                    class="text-gray-600 hover:text-brand text-sm block py-1 transition-all hover:translate-x-1">
                                                     {{ model.name }}
                                                 </a>
                                             </li>
-                                            {% empty y %}
-                                            >Próximamente...</li>
+                                            {% empty %}
+                                            <li class="text-gray-400 text-xs italic">Próximamente...</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
