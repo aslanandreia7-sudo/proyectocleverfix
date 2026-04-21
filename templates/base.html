@@ -6,25 +6,47 @@
     <title>{% block title %}CleverFix | Refacciones Profesionales{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .bg-brand { background-color: #1565c0; }
-        .text-brand { color: #1565c0; }
-        .bg-brand-dark { background-color: #0d47a1; }
-
-        .mega-menu { display: none; }
-
-        @media (hover: hover) and (pointer: fine) {
-            .group:hover .mega-menu { display: block; }
-        }
+        .bg-brand     { background-color: #1565c0; }
+        .text-brand   { color: #1565c0; }
+        .bg-brand-dark{ background-color: #0d47a1; }
+        .border-brand { border-color: #1565c0; }
 
         #main-header, #main-logo { transition: all 0.3s ease-in-out; }
 
-        .mobile-menu-panel {
+        /* ── Dropdown panel ── */
+        .cat-panel {
             display: none;
+            position: absolute;
+            top: 0;
+            left: 100%;
+            width: 560px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.18);
+            z-index: 9999;
+            padding: 20px 24px;
         }
 
-        .mobile-menu-panel.open {
-            display: block;
+        /* Mobile: panel drops inline */
+        @media (max-width: 1023px) {
+            .cat-panel {
+                position: static;
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+                border-top: 1px solid #e5e7eb;
+                padding: 12px 16px;
+                background: #f8fafc;
+            }
         }
+
+        .cat-panel.open { display: block; }
+
+        .cat-row.active { background: #eff6ff; color: #1565c0; }
+        .cat-row.active .cat-arrow { transform: rotate(90deg); }
+        .cat-arrow { transition: transform .2s; display: inline-block; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans overflow-x-hidden">
@@ -45,26 +67,25 @@
                     <button class="flex items-center space-x-1 text-white hover:text-blue-300 font-bold outline-none transition-colors">
                         <span>⚙️ Mi Cuenta ({{ user.username }})</span>
                         <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-
                     <div class="absolute right-0 w-56 pt-2 hidden group-hover:block z-[100]">
                         <div class="bg-white border border-gray-200 rounded-lg shadow-2xl overflow-hidden">
-                            <a href="{% url 'account_dashboard' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">📊 Account Dashboard</a>
-                            <a href="{% url 'address_book' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">📍 Address Book</a>
-                            <a href="{% url 'my_orders' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">📦 My Orders</a>
+                            <a href="{% url 'account_dashboard' %}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">📊 Account Dashboard</a>
+                            <a href="{% url 'address_book' %}"      class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">📍 Address Book</a>
+                            <a href="{% url 'my_orders' %}"         class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">📦 My Orders</a>
                             <div class="border-t border-gray-100">
                                 <form action="{% url 'logout' %}" method="post">
                                     {% csrf_token %}
-                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-bold transition-colors">🚪 Logout</button>
+                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-bold">🚪 Logout</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
             {% else %}
-                <a href="{% url 'login' %}" class="hover:text-white">Login</a>
+                <a href="{% url 'login' %}"    class="hover:text-white">Login</a>
                 <a href="{% url 'register' %}" class="hover:text-white">Register</a>
             {% endif %}
 
@@ -75,19 +96,17 @@
     <header id="main-header" class="bg-white border-b-2 border-brand py-3 md:py-4 px-4 md:px-10 sticky top-0 z-50 shadow-md">
         <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-6">
             <div class="flex items-center justify-between gap-3">
-                <a href="/" class="shrink-0" id="logo-container">
+                <a href="/" class="shrink-0">
                     {% if site_settings.logo %}
                         <img src="{{ site_settings.logo.url }}" alt="CleverFix" id="main-logo"
-                             class="object-contain" style="max-height: 72px; width: auto;">
+                             class="object-contain" style="max-height:72px;width:auto;">
                     {% else %}
                         <span class="text-2xl font-black text-brand tracking-tighter">CLEVER<span class="text-red-600">FIX</span></span>
                     {% endif %}
                 </a>
-
                 <button id="mobileMenuBtn" type="button"
                         class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-md border border-gray-300 text-gray-700 bg-white active:scale-95">
-                    <span class="sr-only">Abrir menú</span>
-                    ☰
+                    <span class="sr-only">Abrir menú</span>☰
                 </button>
             </div>
 
@@ -96,9 +115,7 @@
                 <input type="text" name="q" placeholder="Busca refacciones para iPhone, Samsung, Mac..."
                        class="w-full px-4 py-3 outline-none text-sm min-w-0"
                        value="{{ request.GET.q|default:'' }}">
-                <button type="submit" class="bg-brand hover:bg-brand-dark text-white px-4 md:px-6 font-bold transition-colors whitespace-nowrap">
-                    BUSCAR
-                </button>
+                <button type="submit" class="bg-brand hover:bg-brand-dark text-white px-4 md:px-6 font-bold transition-colors whitespace-nowrap">BUSCAR</button>
             </form>
 
             <nav class="flex flex-wrap gap-3 md:gap-4 items-center font-medium text-xs lg:text-sm">
@@ -116,53 +133,62 @@
     </header>
 
     <div class="flex flex-col lg:flex-row max-w-7xl mx-auto mt-4 lg:mt-6 gap-4 lg:gap-6 px-4 pb-20">
-        <aside id="sidebar" class="w-full lg:w-64 shrink-0 relative">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                <button type="button" id="brandToggle"
-                        class="w-full bg-brand text-white p-3 font-bold uppercase text-[11px] tracking-wider flex items-center justify-between lg:cursor-default">
-                    Categorías de Marcas
-                    <span>☰</span>
+
+        <aside class="w-full lg:w-64 shrink-0">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-visible">
+
+                <button id="brandToggle" type="button"
+                        class="w-full bg-brand text-white p-3 font-bold uppercase text-[11px] tracking-wider flex items-center justify-between rounded-t-lg">
+                    <span>Categorías de Marcas</span>
+                    <svg id="sidebarChevron" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
                 </button>
 
                 <div id="brandList" class="hidden lg:block">
-                    <div class="flex flex-col">
-                        {% for cat in nav_brands %}
-                        <div class="group border-b last:border-0 border-gray-100 relative">
-                            <a href="{% url 'category_filter' cat.slug %}"
-                               class="w-full text-left p-3 hover:bg-blue-50 flex justify-between items-center text-sm font-medium text-gray-700 hover:text-brand transition-colors">
-                                {{ cat.name }}
-                                <span class="text-gray-300 text-xs">▶</span>
-                            </a>
+                    {% for cat in nav_brands %}
+                    <div class="relative border-b last:border-0 border-gray-100">
 
-                            <div class="mega-menu lg:absolute lg:left-64 lg:top-0 lg:w-[600px] w-full bg-white shadow-2xl border border-gray-200 rounded-r-lg z-50 p-4 lg:p-6 min-h-[300px]">
-                                <h2 class="text-lg lg:text-xl font-bold text-brand border-b pb-2 mb-4">{{ cat.name }}</h2>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-                                    {% for type in cat.types.all %}
-                                    <div>
-                                        <h3 class="text-red-600 font-bold text-xs uppercase tracking-widest mb-3 border-b border-red-50">
-                                            {{ type.name }}
-                                        </h3>
-                                        <ul class="space-y-1">
-                                            {% for model in type.models.all %}
-                                            <li>
-                                                <a href="{% url 'model_filter' cat.slug type.slug model.slug %}"
-                                                   class="text-gray-600 hover:text-brand text-sm block py-1 transition-all hover:translate-x-1">
-                                                    {{ model.name }}
-                                                </a>
-                                            </li>
-                                            {% empty %}
-                                            <li class="text-gray-400 text-xs italic">Próximamente...</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                    {% endfor %}
+                        <button type="button"
+                                data-cat="{{ cat.slug }}"
+                                class="cat-row w-full text-left px-4 py-3 flex justify-between items-center text-sm font-semibold text-gray-700 hover:bg-blue-50 hover:text-brand transition-colors">
+                            <span>{{ cat.name }}</span>
+                            <span class="cat-arrow text-gray-400 text-xs">▶</span>
+                        </button>
+
+                        <div id="panel-{{ cat.slug }}" class="cat-panel">
+                            <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-100">
+                                <h2 class="text-base font-bold text-brand">{{ cat.name }}</h2>
+                                <a href="{% url 'category_filter' cat.slug %}"
+                                   class="text-xs text-brand font-semibold hover:underline">Ver todos →</a>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+                                {% for type in cat.types.all %}
+                                <div>
+                                    <h3 class="text-red-600 font-bold text-[10px] uppercase tracking-widest mb-2">
+                                        {{ type.name }}
+                                    </h3>
+                                    <ul class="space-y-0.5">
+                                        {% for model in type.models.all %}
+                                        <li>
+                                            <a href="{% url 'model_filter' cat.slug type.slug model.slug %}"
+                                               class="text-gray-600 hover:text-brand text-sm block py-0.5 transition-colors">
+                                                {{ model.name }}
+                                            </a>
+                                        </li>
+                                        {% empty %}
+                                        <li class="text-gray-400 text-xs italic">Próximamente...</li>
+                                        {% endfor %}
+                                    </ul>
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
-                        {% empty %}
-                        <p class="p-4 text-xs text-gray-400 text-center">No hay categorías cargadas.</p>
-                        {% endfor %}
+
                     </div>
+                    {% empty %}
+                    <p class="p-4 text-xs text-gray-400 text-center">No hay categorías cargadas.</p>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -179,39 +205,62 @@
     </div>
 
     <script>
-        const header = document.getElementById("main-header");
-        const logo = document.getElementById("main-logo");
-        const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-        const brandToggle = document.getElementById("brandToggle");
-        const brandList = document.getElementById("brandList");
+    (function () {
+        const header      = document.getElementById('main-header');
+        const logo        = document.getElementById('main-logo');
+        const mobileBtn   = document.getElementById('mobileMenuBtn');
+        const brandToggle = document.getElementById('brandToggle');
+        const brandList   = document.getElementById('brandList');
+        const sideChevron = document.getElementById('sidebarChevron');
 
-        window.addEventListener("scroll", function() {
-            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-                header.classList.remove("py-3", "md:py-4");
-                header.classList.add("py-2", "bg-white/95", "backdrop-blur-sm");
-                if (logo) logo.style.maxHeight = "50px";
-            } else {
-                header.classList.remove("py-2", "bg-white/95", "backdrop-blur-sm");
-                header.classList.add("py-3", "md:py-4");
-                if (logo) logo.style.maxHeight = "72px";
-            }
+        // Shrink header on scroll
+        window.addEventListener('scroll', function () {
+            const s = document.documentElement.scrollTop > 50;
+            header.classList.toggle('py-2', s);
+            header.classList.toggle('bg-white/95', s);
+            header.classList.toggle('backdrop-blur-sm', s);
+            header.classList.toggle('py-3', !s);
+            header.classList.toggle('md:py-4', !s);
+            if (logo) logo.style.maxHeight = s ? '50px' : '72px';
         });
 
-        if (mobileMenuBtn && brandList) {
-            mobileMenuBtn.addEventListener("click", () => {
-                brandList.classList.toggle("hidden");
-                brandList.classList.toggle("block");
-            });
+        // Mobile: show/hide brand list
+        function toggleSidebar() {
+            if (window.innerWidth >= 1024) return;
+            const open = !brandList.classList.contains('hidden');
+            brandList.classList.toggle('hidden', open);
+            brandList.classList.toggle('block', !open);
+            sideChevron.style.transform = open ? '' : 'rotate(180deg)';
         }
+        mobileBtn?.addEventListener('click', toggleSidebar);
+        brandToggle?.addEventListener('click', toggleSidebar);
 
-        if (brandToggle && brandList) {
-            brandToggle.addEventListener("click", () => {
-                if (window.innerWidth < 1024) {
-                    brandList.classList.toggle("hidden");
-                    brandList.classList.toggle("block");
+        // Category rows: click to open panel
+        document.querySelectorAll('.cat-row').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const slug  = btn.getAttribute('data-cat');
+                const panel = document.getElementById('panel-' + slug);
+                const isOpen = panel.classList.contains('open');
+
+                // Close all
+                document.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('open'));
+                document.querySelectorAll('.cat-row').forEach(r => r.classList.remove('active'));
+
+                // Open this one (toggle)
+                if (!isOpen) {
+                    panel.classList.add('open');
+                    btn.classList.add('active');
                 }
             });
-        }
+        });
+
+        // Click outside = close all panels
+        document.addEventListener('click', function () {
+            document.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('open'));
+            document.querySelectorAll('.cat-row').forEach(r => r.classList.remove('active'));
+        });
+    })();
     </script>
 </body>
 </html>
